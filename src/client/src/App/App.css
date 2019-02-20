@@ -1,0 +1,69 @@
+.App {
+  background-color: grey;
+  text-align: center;
+}
+
+header {
+  display: flex;
+  background-color: grey;
+}
+
+main {
+  background-color: grey;
+  width: 100%;
+}
+footer {
+  background-color: grey;
+  bottom: 0;
+}
+.menu-bars {
+  height: 5px;
+  background-color: black;
+  margin: 6px 0;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.menu-bars-3 {
+  width: 60%;
+  height: 5px;
+  background-color: black;
+  margin: 6px 0;
+  border-radius: 8px;
+
+}
+
+.menu-bars-3:hover {
+  width: 100%;
+  height: 5px;
+  background-color: black;
+  margin: 6px 0;
+  border-radius: 8px;
+}
+
+.menu-container {
+  padding: 5px;
+  max-width: 10%;
+  width: 2.5em;
+  margin: 10px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.user-component {
+ margin: 10px;
+}
+.title {
+  font-size: 2em;
+  flex: 1;
+  margin: 10px;
+}
+
+.room-list {
+  display: ;
+}
+
+.message-list {
+  display: ;
+}
+
