@@ -44,7 +44,7 @@ class ListList extends Component {
 
   deleteList = (activeList) => {
     const id = activeList.id;
-    fetch(`/api/lists//${id}/destroy`)
+    fetch(`/api/lists/${id}/destroy`)
       .then(() => this.getListsOnMount())
       .catch(err => console.log(err))
   }
