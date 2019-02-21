@@ -21,7 +21,7 @@ if (app.get('env') === 'production') {
   sess.cookie.secure = true // serve secure cookies
 }
 
-// pg heroku code suite
+// pg heroku code suite.
 const { Client } = require('pg');
 
 const client = new Client({
