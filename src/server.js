@@ -14,12 +14,13 @@ const listQueries = require("./db/queries.lists.js");
 
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
-
+/*
 // Setup for express-session
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1) // trust first proxy
   session.cookie.secure = true // serve secure cookies
 }
+*/
 // pg heroku code suite.
 const { Client } = require('pg');
 
