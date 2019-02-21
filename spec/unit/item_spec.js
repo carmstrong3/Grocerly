@@ -103,45 +103,9 @@ describe("Item", () => {
     it("should return the associated List", (done) => {
       this.item.getList()
         .then((associatedList) => {
-          expect(associatedList.title).toBe("Babaghanoush");
+          expect(associatedList.name).toBe("Babaghanoush");
           done();
         })
     })
   })
-  describe("#setUser()", () => {
-
-    it("should associate a post and a user together", (done) => {
-      User.create({
-        username: "ada@example.com",
-        password: "password"
-      })
-      .then((newUser) => {
-
-        expect(this.item.userId).toBe(this.user.id);
-
-        this.item.setUser(newUser)
-        .then((post) => {
-
-          expect(this.item.userId).toBe(newUser.id);
-          done();
-
-        });
-      })
-    });
-
-  });
-
-  describe("#getUser()", () => {
-
-    it("should return the associated topic", (done) => {
-
-      this.item.getUser()
-      .then((associatedUser) => {
-        expect(associatedUser.email).toBe("starman@tesla.com");
-        done();
-      });
-
-    });
-
-  });
 });

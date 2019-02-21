@@ -47,15 +47,15 @@ class User extends Component {
   }
 
   handleDisplayName = () => {
-    if (this.props.currentUser) {
-      return <span>Guest</span>;
+    if (this.props.currentUser && !this.props.currentUser.username) {
+      return <span>Guest</span>
     } else {
-      return <span>{this.props.currentUser.username}</span>;
+      return <span>{this.props.currentUser.username}</span>
    }
   }
 
   handleSignButton = () => {
-    if (this.props.currentUser) {
+    if (this.props.currentUser && !this.props.currentUser.username) {
       return <div><form action="/login" method="post">
     <div>
         <label>Username:</label>

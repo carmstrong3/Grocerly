@@ -88,11 +88,10 @@ passport.use(new LocalStrategy(
 app.post('/login', function(req, res){
   passport.authenticate("local")(req, res, function () {
         if(!req.user){
-          req.flash("notice", "Sign in failed. Please try again.")
           res.redirect("/");
         } else {
-          req.flash("notice", "You've successfully signed in!");
-          res.redirect(303, `/`, {currentUser: req.user});
+          console.log("you've successfully signed in")
+          res.redirect("/");
         }
   })
 });
@@ -214,7 +213,6 @@ app.get(`/api/lists/:listId/items/:itemId/cancel`, (req, res) => {
 // begin lists suite
 
 app.get("/api/lists", (req, res) => {
-  console.log("called api/lists")
   listQueries.getAllLists((err, lists) => {
     if(err){
       console.log(err);

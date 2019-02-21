@@ -1,6 +1,6 @@
 const request = require("request");
 const server = require("../../src/server");
-const base = "http://localhost:3000/api/lists/";
+const base = "http://localhost:5000/api/lists/";
 const sequelize = require("../../src/db/models/index").sequelize;
 const List = require("../../src/db/models").List;
 const User = require("../../src/db/models").User;
@@ -11,8 +11,7 @@ describe("routes : lists", () => {
     this.list;
     sequelize.sync({force: true}).then((res) => {
       List.create({
-        title: "Thanksgiving Dinner Shopping List",
-        description: "List for Thanksgiving party"
+        name: "Thanksgiving Dinner Shopping List"
       })
         .then((list) => {
           this.list = list;
@@ -50,23 +49,14 @@ describe("routes : lists", () => {
   });
 
   // Test suite for the http POST of ../api/lists/create
-  describe("POST /api/lists/create", () => {
-    const options = {
-      url: `${base}create`,
-      form: {
-        title: "Cake",
-        description: "Birthday cake for someone"
-      }
-    };
-
+  describe("GET /api/lists/create/:name", () => {
     it("should create a new list and redirect to the new list's page", (done) => {
-      request.post(options, (err, res, body) => {
-        List.findOne({where: {title: "Cake"}})
+      request.get(`${base}create/Cake`, (err, res, body) => {
+        List.findOne({where: {name: "Cake"}})
           .then((list) => {
-            expect(res.statusCode).toBe(303);
+            expect(res.statusCode).toBe(200);
             expect(err).toBeNull();
-            expect(list.title).toBe("Cake");
-            expect(list.description).toBe("Birthday cake for someone");
+            expect(list.name).toBe("Cake");
             done();
           })
           .catch((err) => {
@@ -78,7 +68,7 @@ describe("routes : lists", () => {
   });
 
   // test suite for destroying a list
-  describe("POST /api/lists/:id/destroy", () => {
+  describe("GET /api/lists/:id/destroy", () => {
     it("should delete the list with the associated id", (done) => {
       //return all the lists
       List.findAll()
@@ -87,10 +77,9 @@ describe("routes : lists", () => {
           const listCountPreDelete = list.length;
           expect(listCountPreDelete).toBe(1);
           // destroy the list item created at the "beforeEach" level
-          request.post(`${base}${this.list.id}/destroy`, (err, res, body) => {
+          request.get(`${base}${this.list.id}/destroy`, (err, res, body) => {
             List.findAll()
               .then((list) => {
-                console.log(list)
                 // the "this.list" item should be gone
                 expect(err).toBeNull();
                 expect(list.length).toBe(listCountPreDelete - 1);
@@ -107,8 +96,7 @@ describe("routes : lists", () => {
       const options = {
         url: `${base}${this.list.id}/update`,
         form: {
-          title: "Side-dish",
-          description: "Actually we're just gonna do a side dish"
+          name: "Side-dish",
         }
       };
 
@@ -119,7 +107,7 @@ describe("routes : lists", () => {
           where: {id: this.list.id}
         })
           .then((list) => {
-            expect(list.title).toBe("Side-dish");
+            expect(list.name).toBe("Side-dish");
             done();
           });
       });

@@ -1,6 +1,6 @@
 const request = require("request");
 const server = require("../../src/server");
-const base = "http://localhost:3000/api/users";
+const base = "http://localhost:5000/api/users";
 const User = require("../../src/db/models").User;
 const sequelize = require("../../src/db/models/index").sequelize;
 
@@ -19,14 +19,14 @@ describe("routes : users", () => {
 
   });
   // suitre for using http POST method with users
-  describe("POST /api/users", () => {
+  describe("POST /api/users/create", () => {
 
     it("should create a new user with valid values and redirect", (done) => {
 
       const options = {
         url: `${base}/create`,
         form: {
-          email: "user@example.com",
+          username: "user@example.com",
           password: "123456789"
         }
       }
@@ -34,10 +34,10 @@ describe("routes : users", () => {
       request.post(options,
         (err, res, body) => {
 
-          User.findOne({where: {email: "user@example.com"}})
+          User.findOne({where: {username: "user@example.com"}})
           .then((user) => {
             expect(user).not.toBeNull();
-            expect(user.email).toBe("user@example.com");
+            expect(user.username).toBe("user@example.com");
             expect(user.id).toBe(1);
             done();
           })
@@ -54,12 +54,12 @@ describe("routes : users", () => {
         {
           url: `${base}/create`,
           form: {
-            email: "no",
+            username: "no",
             password: "123456789"
           }
         },
         (err, res, body) => {
-          User.findOne({where: {email: "no"}})
+          User.findOne({where: {username: "no"}})
           .then((user) => {
             expect(user).toBeNull();
             done();
