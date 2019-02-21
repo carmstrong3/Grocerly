@@ -18,9 +18,8 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 // Setup for express-session
 if (app.get('env') === 'production') {
   app.set('trust proxy', 1) // trust first proxy
-  sess.cookie.secure = true // serve secure cookies
+  session.cookie.secure = true // serve secure cookies
 }
-
 // pg heroku code suite.
 const { Client } = require('pg');
 
@@ -39,7 +38,6 @@ client.query('SELECT table_schema,table_name FROM information_schema.tables;', (
   client.end();
 });
 // end pg heroku 
-
 // Suite for passport-local.js
 app.use(cookieParser());
 app.use(session({
