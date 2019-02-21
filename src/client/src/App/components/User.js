@@ -55,7 +55,7 @@ class User extends Component {
   }
 
   handleSignButton = () => {
-    if (this.props.currentUser.username) {
+    if (this.props.currentUser) {
       return <div><form action="/login" method="post">
     <div>
         <label>Username:</label>
