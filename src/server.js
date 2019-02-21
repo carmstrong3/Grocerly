@@ -20,7 +20,7 @@ if (app.get('env') === 'production') {
   app.set('trust proxy', 1) // trust first proxy
   sess.cookie.secure = true // serve secure cookies
 }
-  /*
+
 // pg heroku code suite
 const { Client } = require('pg');
 
@@ -39,7 +39,7 @@ client.query('SELECT table_schema,table_name FROM information_schema.tables;', (
   client.end();
 });
 // end pg heroku 
-*/
+
 // Suite for passport-local.js
 app.use(cookieParser());
 app.use(session({
@@ -277,11 +277,7 @@ app.post(`/api/lists/:id/update`, (req, res) => {
 app.get('*', (req,res) =>{
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
-/*
-app.get('*', (req,res) =>{
-  res.sendFile(path.join(__dirname+'/client/public/index.html'));
-});
-*/
+
 const port = process.env.PORT || 5000;
 app.listen(port);
 
