@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 
 class User extends Component {
   constructor(props) {
@@ -13,14 +14,18 @@ class User extends Component {
 
   }
 
-  signOut = () => {
-    fetch(`/logout`)
-      .then(() => this.props.setUser({id: 0}))
+  logIn = () => {
+    fetch('/api/login')
       .catch(err => console.log(err))
   }
 
-  signUp = () => {
+  signOut = () => {
+    this.props.resetUser()
+  }
 
+  signUp = () => {
+    fetch('/api/signup')
+      .catch(err => console.log(err))
   }
 
   componentDidMount = () => {
@@ -47,44 +52,35 @@ class User extends Component {
   }
 
   handleDisplayName = () => {
-    if (this.props.currentUser && !this.props.currentUser.username) {
-      return <span>Guest</span>
+    if (this.props.currentUser) {
+      return <span>{this.props.currentUser}</span>
     } else {
-      return <span>{this.props.currentUser.username}</span>
+      return <span>Guest</span>
    }
   }
 
+    /* returnUser = (form) => {
+    fetch(`/api/login`, {form})
+      .then(res => console.log(res.json()))
+      .catch((err) => console.log(err))
+  } */
+
   handleSignButton = () => {
-    if (this.props.currentUser && !this.props.currentUser.username) {
-      return <div><form action="/login" method="post">
-    <div>
-        <label>Username:</label>
-        <input type="text" value={this.state.userName} name="username" onChange={(e) => {this.handleUserNameChange(e)}}/>
-    </div>
-    <div>
-        <label>Password:</label>
-        <input type="password" name="password"/>
-    </div>
-    <div>
-        <input type="submit" value="Log In"/>
-    </div>
-  </form>
-  <form action="/api/users/create" method="post">
-    <div>
-        <label>Username:</label>
-        <input type="text" name="username"/>
-    </div>
-    <div>
-        <label>Password:</label>
-        <input type="password" name="password"/>
-    </div>
-    <div>
-        <input type="submit" value="Sign Up"/>
-    </div>
-  </form>
-  </div>
+    if (this.props.currentUser === "Guest") {
+      return <div className="log-sign-container">
+        <Link to="/login" class="active">
+          <button className="log-in-button">Log In</button>
+        </Link>
+        <Link to="/signup" class="active">
+          <button className="sign-up-button">Sign Up</button>
+        </Link>
+      </div>
     } else {
-      return <p className="sign-out-button" onClick={this.signOut}>Sign Out</p>
+      return <div className="sign-out-container">
+        <Link to="/logout">
+          <button className="sign-out-button" onClick={this.signOut}>Sign Out</button>
+        </Link>
+      </div>
     }
   }
 

@@ -4,13 +4,29 @@ const flash = require('req-flash');
 const app = express();
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy;
-const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const bodyParser = require("body-parser");
 const User = require("./db/models").User;
 const userQueries = require("./db/queries.users.js");
 const itemQueries = require("./db/queries.items.js");
 const listQueries = require("./db/queries.lists.js");
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.set('trust proxy', 1)
+app.use(session({
+  secret: "cats",
+  resave: false, /* set to true if using passport */
+  saveUninitialized: false,
+  cookie: { httpOnly: false, secure: false, maxAge: 600000}
+}));
+
+app.use((req, res, next) => {
+    if (req.cookies && req.cookies.connect.sid && !req.session.user) {
+        res.clearCookie('connect.sid');
+    }
+    next();
+});
+
 
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
@@ -21,6 +37,7 @@ if (app.get('env') === 'production') {
   session.cookie.secure = true // serve secure cookies
 }
 */
+/*
 // pg heroku code suite.
 const { Client } = require('pg');
 
@@ -39,18 +56,109 @@ client.query('SELECT table_schema,table_name FROM information_schema.tables;', (
   client.end();
 });
 // end pg heroku 
+*/
 // Suite for passport-local.js
-app.use(cookieParser());
-app.use(session({
-  secret: "cats",
-  resave: true,
-  saveUninitialized: false,
-  cookie: { secure: true, maxAge: 60000}
-}));
-app.use(bodyParser.urlencoded({ extended: false }));
+/* removing passport for time being
 app.use(passport.initialize());
 app.use(passport.session());
+*/
 
+// custom authentication begin
+
+// This middleware will check if user's cookie is still saved in browser and user is not set, then automatically log the user out.
+// This usually happens when you stop your express server after login, your cookie still remains saved in the browser.
+
+// middleware function to check for logged-in users
+let sessionChecker = (req, res, next) => {
+    if (req.session && req.session.user) {
+        res.redirect('/dashboard');
+    } else {
+        next();
+    }
+};
+
+// route for user Login
+app.route('/api/login')
+  .get(sessionChecker, (req, res) => {
+    res.redirect('/login');
+  })
+  .post((req, res) => {
+    var username = req.body.username,
+        password = req.body.password;
+
+    User.findOne({ where: { username: username } }).then(function (user) {
+      if (!user) {
+        console.log("user does not exist")
+        res.redirect('/login');
+      } else if (!user.validPassword(password)) {
+        res.redirect('/login');
+      } else {
+        req.session.user = user.dataValues;
+        res.redirect('/api/dashboard');
+      }
+    });
+  });
+
+// route for user signup
+app.route('/api/signup')
+  .get(sessionChecker, (req, res) => {
+    res.redirect('/signup');
+  })
+  .post((req, res) => {
+    // capture information from request's body to make new user object
+    let newUser = {
+      username: req.body.username,
+      password: req.body.password,
+      passwordConfirmation: req.body.passwordConfirmation
+    };
+    // use object as parameter for createUser query
+    userQueries.createUser(newUser, (err, user) => {
+      if(err){
+        res.send("error: " + err);
+        } else {
+    // if everything goes well, send message that everything is fine.
+        res.redirect(303, "/login")
+      }
+    })
+  });
+
+// route for user's dashboard
+app.get('/api/dashboard', (req, res) => {
+    if (req.session && req.session.user) {
+      let username = req.session.user.username;
+      User.findOne({ where: { username: username}})
+        .then(function (user) {
+          if (!user) {
+          // if the user isn't found in the DB, reset the session info and
+          // redirect the user to the login page
+          console.log("no user, resetting session")
+          req.session.reset();
+          res.redirect('/login');
+        } else {
+          // render the dashboard page
+          res.redirect('/dashboard')
+        }
+      });
+    } else {
+      console.log("no session user");
+        res.redirect('/login');
+    }
+});
+// route for user logout
+app.get('/logout', (req, res) => {
+    if (req.session && req.session.user) {
+        res.clearCookie('connect.sid');
+        res.redirect('/');
+    } else {
+        res.redirect('/');
+    }
+});
+
+// end custom authentication
+
+
+/*
+// passport.js section
 passport.serializeUser(function(user, done) {
 	console.log("called serializeUser");
   done(null, user.id);
@@ -100,35 +208,30 @@ app.get('/logout', function(req, res){
     res.redirect('/');
 });
 // end passport-local.js
+*/
 
 // suite for user routes
-app.post('/api/login', (req, res) => {
-  res.redirect(303, "/")
+/*app.post('/api/login', (req, res) => {
+  console.log("called /api/login")
+  res.send({user: "Hello"})
 })
-
+*/
 app.get(`/api/users/:username`, (req, res) => {
   User.findOne({where: {username: req.params.username}})
     .then(user => res.send({userId: user.id, userName: user.username}))
     .catch(err => console.log(err))
 });
 
-app.post('/api/users/create', (req, res) => {
-  // capture information from request's body to make new user object
-  let newUser = {
-    username: req.body.username,
-    password: req.body.password,
-    passwordConfirmation: req.body.passwordConfirmation
-  };
-  // use object as parameter for createUser query
-  userQueries.createUser(newUser, (err, user) => {
-    if(err){
-      res.send("error: " + err);
-      } else {
-  // if everything goes well, send message that everything is fine.
-      res.redirect(303, "/")
-    }
-  })
+app.get('/api/getUser', (req, res) => {
+  if(req.session && req.session.user) {
+    console.log("sending")
+    res.send({username: req.session.user.username})
+  } else {
+    console.log("no user")
+    res.redirect("/login")
+  }
 });
+
 
 app.post(`/api/users/:userId`, (req, res) => {
   userQueries.deleteUser(req.params.userId, (err, deletedRecordsCount) => {

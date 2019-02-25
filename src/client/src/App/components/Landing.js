@@ -6,6 +6,10 @@ import React, {Component} from 'react';
 
 class Landing extends Component {
 
+  componentDidMount(){
+    this.props.getCurrentUserOnMount();
+  }
+
   render () {
     return(
       <section className='feature-list-container'>

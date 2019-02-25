@@ -4,6 +4,10 @@ import ListList from './components/ListList';
 import ItemList from './components/ItemList';
 import User from './components/User';
 import Landing from './components/Landing';
+import Login from './components/Login';
+import Dashboard from './components/Dashboard';
+import Signup from './components/Signup';
+import Cookies from 'js-cookie';
 import './App.css';
 
 
@@ -12,9 +16,25 @@ class App extends Component {
     super(props);
       this.state = {
       activeList: {},
-      currentUser: {},
+      currentUser: "Guest",
       activeItem: {}
       }
+  }
+
+
+  componentDidMount() {
+    this.getCurrentUserOnMount();
+  }
+
+  getCurrentUserOnMount = () => {
+    if(Cookies.get('connect.sid')){
+      fetch('/api/getUser')
+      .then(res => res.json())
+        .then(user => this.setState({currentUser: user.username}))
+        .catch(err => console.log(err));
+    } else {
+      console.log("no user yet")
+    }
   }
 
   setActiveList = (list) => {
@@ -23,6 +43,10 @@ class App extends Component {
 
   setUser = (user) => {
     this.setState({currentUser: user});
+  }
+
+  resetUser = () => {
+    this.setState({currentUser: "Guest"});
   }
 
   resetActiveList = () => {
@@ -53,11 +77,19 @@ class App extends Component {
            <div className="menu-bars-3"></div>
           </div>
           <a className="title" href="/">Grocerly!</a>
-          {this.state.currentUser && this.state.currentUser.username}
-          <User setUser={this.setUser} currentUser={this.state.currentUser}/>
+          <User resetUser={this.resetUser} setUser={this.setUser} currentUser={this.state.currentUser}/>
         </header>
         <main id='main'>
-          <Route exact path="/" component={Landing} />
+          <section className='feature-list-container'>
+            <h1>Welcome to Grocerly</h1>
+              <ul className='feature-list'>
+              <li>Add your own lists</li>
+              <li>Track your items</li>
+            </ul>
+          </section>
+          <Route path="/login" component={Login}/>
+          <Route path="/dashboard" component={Dashboard}/>
+          <Route path="/signup" component={Signup}/>
           <ListList activeList={this.state.activeList} setActiveList={this.setActiveList} resetActiveList={this.resetActiveList}/>
           <div id='content'>
             <ItemList activeItem={this.state.activeItem} resetActiveItem={this.resetActiveItem} setActiveItem={this.setActiveItem} activeList={this.state.activeList} currentUser={this.state.currentUser}/>

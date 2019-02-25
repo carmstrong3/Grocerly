@@ -22,5 +22,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignkey: "listId"
     })
   };
+
+  User.prototype.validPassword = function(password) {
+    return password === this.password;
+  }
+
   return User;
 };
