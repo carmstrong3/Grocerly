@@ -30,38 +30,6 @@ app.use((req, res, next) => {
 
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
-/*
-// Setup for express-session
-if (app.get('env') === 'production') {
-  app.set('trust proxy', 1) // trust first proxy
-  session.cookie.secure = true // serve secure cookies
-}
-*/
-/*
-// pg heroku code suite.
-const { Client } = require('pg');
-
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true,
-});
-
-client.connect();
-
-client.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
-  if (err) throw err;
-  for (let row of res.rows) {
-    console.log(JSON.stringify(row));
-  }
-  client.end();
-});
-// end pg heroku 
-*/
-// Suite for passport-local.js
-/* removing passport for time being
-app.use(passport.initialize());
-app.use(passport.session());
-*/
 
 // custom authentication begin
 
@@ -156,66 +124,7 @@ app.get('/logout', (req, res) => {
 
 // end custom authentication
 
-
-/*
-// passport.js section
-passport.serializeUser(function(user, done) {
-	console.log("called serializeUser");
-  done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-	console.log("called deserealizeUser");
-  User.findByPk(id)
-		.then((user, err) => {
-    done(user, err);
-  });
-});
-
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    console.log("called passport.use(new LocalStrategy)");
-    User.findOne({where: { username: username }})
-      .then((user, err) =>  {
-      if(err) { return done(err); }
-      console.log("passed without err")
-      if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-        console.log("passed username")
-      if (password !== user.dataValues.password) {
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-      console.log("passed password, exiting passport.use(newLocalStrategy)")
-      return done(null, user);
-    });
-  }
-));
-
-app.post('/login', function(req, res){
-  passport.authenticate("local")(req, res, function () {
-        if(!req.user){
-          res.redirect("/");
-        } else {
-          console.log("you've successfully signed in")
-          res.redirect("/");
-        }
-  })
-});
-
-app.get('/logout', function(req, res){
-    req.logout();
-    res.redirect('/');
-});
-// end passport-local.js
-*/
-
 // suite for user routes
-/*app.post('/api/login', (req, res) => {
-  console.log("called /api/login")
-  res.send({user: "Hello"})
-})
-*/
 app.get(`/api/users/:username`, (req, res) => {
   User.findOne({where: {username: req.params.username}})
     .then(user => res.send({userId: user.id, userName: user.username}))
