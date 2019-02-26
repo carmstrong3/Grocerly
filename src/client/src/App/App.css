@@ -1,6 +1,19 @@
+html {
+  height: 100%;
+}
+
 .App {
-  background-color: grey;
+  min-height: 100%;
+  height: auto !important;
+  margin-bottom: -50px;
   text-align: center;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  background-color: grey;
 }
 
 header {
@@ -9,36 +22,12 @@ header {
 }
 
 main {
-  background-color: grey;
-  width: 100%;
+  flex: 1;
+  padding: 20px;
 }
+
 footer {
-  background-color: grey;
-  bottom: 0;
-}
-.menu-bars {
-  height: 5px;
-  background-color: black;
-  margin: 6px 0;
-  border-radius: 8px;
-  width: 100%;
-}
-
-.menu-bars-3 {
-  width: 60%;
-  height: 5px;
-  background-color: black;
-  margin: 6px 0;
-  border-radius: 8px;
-
-}
-
-.menu-bars-3:hover {
-  width: 100%;
-  height: 5px;
-  background-color: black;
-  margin: 6px 0;
-  border-radius: 8px;
+  padding: 20px;
 }
 
 .menu-container {
@@ -53,17 +42,31 @@ footer {
 .user-component {
  margin: 10px;
 }
+
+.feature-list {
+  list-style-type: none;
+}
+
 .title {
   font-size: 2em;
   flex: 1;
   margin: 10px;
 }
-
-.room-list {
-  display: ;
+.dashboard {
+  display: flex;
+}
+.list-container {
+  flex: 1;
 }
 
-.message-list {
-  display: ;
+.content {
+  flex: 1;
 }
 
+#new-delete-list {
+  display: flex;
+}
+
+#new-purchase-delete-item {
+  display: flex;
+}

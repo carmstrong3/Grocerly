@@ -49,9 +49,24 @@ class ListList extends Component {
       .catch(err => console.log(err))
   }
 
+  handleActiveListDisplay = (listName) => {
+    if(this.props.activeList.name === listName){
+      return <b>{listName}</b>
+    } else {
+      return <p>{listName}</p>
+    }
+  }
   render() {
     return(
       <section className="list-list">
+        <section id="new-delete-list">
+          <form className="new-list-form" onSubmit={(e) => this.createList(e)}>
+            <label>Enter new list name:</label>
+              <input type="text" value={this.state.newListName} onChange={(e) => {this.handleListChange(e)}}/>
+              <input type="submit"/>
+          </form>
+          <button onClick={() => {this.deleteList(this.props.activeList)}}>Delete Active List</button>
+      </section>
         <section>
           <table className="list-table">
             <colgroup>
@@ -60,25 +75,14 @@ class ListList extends Component {
             <tbody>
               {this.state.lists.map((list, index) =>
                 <tr key={index} onClick={() => this.props.setActiveList(list)}>
-                  <td>{list.name}</td>
-                  <td></td>
+                  <td>{this.handleActiveListDisplay(list.name)}</td>
                 </tr>
                 )
               }
             </tbody>
           </table>
         </section>
-        <section className="form-container">
-          <form className="new-list-form" onSubmit={(e) => this.createList(e)}>
-            <label>Enter new list name:</label>
-              <input type="text" value={this.state.newListName} onChange={(e) => {this.handleListChange(e)}}/>
-              <input type="submit"/>
-          </form>
-        </section>
-        <section>
-          <button onClick={() => {this.deleteList(this.props.activeList)}}>Delete Active List</button>
-        </section>
-      </section>
+              </section>
     )
   }
 }

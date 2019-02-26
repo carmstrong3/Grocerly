@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { Route, Link } from 'react-router-dom';
-import ListList from './components/ListList';
-import ItemList from './components/ItemList';
+import { Route } from 'react-router-dom';
 import User from './components/User';
-import Landing from './components/Landing';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Signup from './components/Signup';
@@ -15,9 +12,7 @@ class App extends Component {
   constructor(props) {
     super(props);
       this.state = {
-      activeList: {},
-      currentUser: "Guest",
-      activeItem: {}
+      currentUser: "Guest"
       }
   }
 
@@ -37,20 +32,14 @@ class App extends Component {
     }
   }
 
-  setActiveList = (list) => {
-    this.setState({activeList: list});
-  }
-
   setUser = (user) => {
     this.setState({currentUser: user});
   }
 
   resetUser = () => {
-    this.setState({currentUser: "Guest"});
-  }
-
-  resetActiveList = () => {
-    this.setState({activeList: {}});
+    this.setState({currentUser: "Guest"})
+    fetch('/logout')
+      .catch(err => console.log(err));
   }
 
   toggleMenuBar = (e) => {
@@ -59,12 +48,16 @@ class App extends Component {
   clickMenuBar = (e) => {
   }
 
-  resetActiveItem = () => {
-    this.setState({activeItem: {}});
-  }
-
-  setActiveItem = (item) => {
-    this.setState({activeItem: item});
+  showWelcome = () => {
+    if(this.state.currentUser === "Guest"){
+      return <section className='feature-list-container'>
+            <h1>Welcome to Grocerly</h1>
+          </section>
+    } else {
+      return <section className="welcome-user">
+              <h3>Hello {this.state.currentUser}</h3>
+            </section>
+    }
   }
 
   render() {
@@ -80,20 +73,10 @@ class App extends Component {
           <User resetUser={this.resetUser} setUser={this.setUser} currentUser={this.state.currentUser}/>
         </header>
         <main id='main'>
-          <section className='feature-list-container'>
-            <h1>Welcome to Grocerly</h1>
-              <ul className='feature-list'>
-              <li>Add your own lists</li>
-              <li>Track your items</li>
-            </ul>
-          </section>
+          {this.showWelcome()}
           <Route path="/login" component={Login}/>
           <Route path="/dashboard" component={Dashboard}/>
           <Route path="/signup" component={Signup}/>
-          <ListList activeList={this.state.activeList} setActiveList={this.setActiveList} resetActiveList={this.resetActiveList}/>
-          <div id='content'>
-            <ItemList activeItem={this.state.activeItem} resetActiveItem={this.resetActiveItem} setActiveItem={this.setActiveItem} activeList={this.state.activeList} currentUser={this.state.currentUser}/>
-          </div>
         </main>
         <footer>
           <p className="created-by">Created by: Clifford Armstrong III</p>

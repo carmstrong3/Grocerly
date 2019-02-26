@@ -13,7 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       as: "items"
     });
     List.belongsToMany(models.User, {
-      through: "Groups"
+      through: "Groups",
+      as: "users",
+      foreignKey: "listId",
     });
   };
   return List;

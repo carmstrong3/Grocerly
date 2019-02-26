@@ -1,12 +1,17 @@
 import React, {Component} from 'react';
+import ListList from './ListList';
+import ItemList from './ItemList';
 
 class Dashboard extends Component {
   constructor(props){
     super(props);
     this.state = {
-      currentUser: "Guest"
+      currentUser: "Guest",
+      activeList: {},
+      activeItem: {}
     }
   }
+
   componentDidMount() {
     this.getCurrentUserOnMount();
   }
@@ -17,15 +22,39 @@ class Dashboard extends Component {
       .then(user => this.setState({currentUser: user.username}))
         .catch(err => console.log(err));
   }
+
   handleClick = (e) => {
     this.getCurrentUserOnMount();
   }
 
+  setActiveList = (list) => {
+    this.setState({activeList: list});
+  }
+
+  resetActiveList = () => {
+    this.setState({activeList: {}});
+  }
+
+  resetActiveItem = () => {
+    this.setState({activeItem: {}});
+  }
+
+  setActiveItem = (item) => {
+    this.setState({activeItem: item});
+  }
+
   render(){
     return(
-      <div>
-        <h1>Hi {this.state.currentUser}, Welcome to your Dashboard</h1>
-        <button type="button" onClick={(e) => this.handleClick(e)}>get user</button>
+      <div className="dashboard">
+        {/* <div>
+          <button type="button" onClick={(e) => this.handleClick(e)}>get user</button>
+        </div> */}
+        <div className="list-container">
+          <ListList activeList={this.state.activeList} setActiveList={this.setActiveList} resetActiveList={this.resetActiveList} currentUser={this.state.currentUser}/>
+        </div>
+          <div id='content'>
+            <ItemList activeItem={this.state.activeItem} resetActiveItem={this.resetActiveItem} setActiveItem={this.setActiveItem} activeList={this.state.activeList} currentUser={this.state.currentUser}/>
+          </div>
       </div>
     )
   }

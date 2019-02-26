@@ -225,7 +225,7 @@ app.get(`/api/users/:username`, (req, res) => {
 app.get('/api/getUser', (req, res) => {
   if(req.session && req.session.user) {
     console.log("sending")
-    res.send({username: req.session.user.username})
+    res.send({username: req.session.user.username, id: req.session.user.id})
   } else {
     console.log("no user")
     res.redirect("/login")
