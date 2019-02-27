@@ -6,12 +6,12 @@ Make grocery lists on the fly!
 
 Using Grocerly is super easy. To get started just go to https://grocerly-3.herokuapp.com/ and load it up.
 
-- The "User" features are still in development, so you will not yet be able to make an account to customize your experience. 
+- The "User" features is implimented, so you can create an account and sign-in by clicking on the respective buttons on the top-right of the home page and following them. Once you log-in, you will be taken to your dashboard. 
 
 - The "List" feature is implimented, so you can create a new list by simply filling out the form in the middle of the page and clicking the "Submit" button.
 --  To move to your list, simply click on it where it is displayed on the left-hand-side of the window. 
 --  Once you have clicked on the list, it is now your "Active" list. If you choose to delete it, you can with the "Delete Active List" button below the new list form.
----  Up next on the "List" feature's devlist is to make it more user-friendly by using css to clearly dilineate the "active" list from the others.
+---  Up next on the "List" feature's devlist is to filter the lists you are able to see by your user account.
 
 - The "Item" feature is implimented, so you can also create new items by filling out the form below the "Delete Active List" button and clicking the "Submit" button.
 -- Once you create your item, it will auto-populate within the "Active List". It will be tied to that list. Items come as "not purchased" by default which is identified currently by the word "no".
